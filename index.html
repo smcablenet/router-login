@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>🔒:: SM-Cable Network | Remote Management</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#0d1117;
+  color:#fff;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+/* Homepage */
+
+.home-page{
+  width:100%;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  background:
+  radial-gradient(circle at top left, #1f2937 0%, transparent 40%),
+  radial-gradient(circle at bottom right, #111827 0%, transparent 40%),
+  #0d1117;
+}
+
+.login-box{
+  width:100%;
+  max-width:430px;
+  background:#161b22;
+  border:1px solid #30363d;
+  border-radius:20px;
+  padding:35px 25px;
+  box-shadow:0 0 40px rgba(0,0,0,0.5);
+}
+
+.title{
+  text-align:center;
+  margin-bottom:10px;
+  font-size:30px;
+  font-weight:bold;
+  color:#58a6ff;
+}
+
+.subtitle{
+  text-align:center;
+  margin-bottom:12px;
+  color:#8b949e;
+  font-size:15px;
+}
+
+.form-group{
+  margin-bottom:22px;
+}
+
+label{
+  display:block;
+  margin-bottom:10px;
+  font-size:14px;
+  color:#c9d1d9;
+}
+
+input{
+  width:100%;
+  padding:14px 16px;
+  border:none;
+  border-radius:12px;
+  background:#0d1117;
+  border:1px solid #30363d;
+  color:#fff;
+  font-size:16px;
+  outline:none;
+  transition:0.3s;
+}
+
+input:focus{
+  border-color:#58a6ff;
+  box-shadow:0 0 10px rgba(88,166,255,0.3);
+}
+
+.login-btn{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:12px;
+  background:#238636;
+  color:#fff;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.login-btn:hover{
+  background:#2ea043;
+}
+
+.ip-box{
+  margin-top:18px;
+  padding:12px;
+  border-radius:10px;
+  background:#0d1117;
+  border:1px solid #30363d;
+  text-align:center;
+  font-size:14px;
+  color:#58a6ff;
+  word-break:break-all;
+}
+
+.footer{
+  margin-top:25px;
+  text-align:center;
+  font-size:13px;
+  color:#8b949e;
+  line-height:1.8;
+}
+
+.footer a{
+  color:#58a6ff;
+  text-decoration:none;
+}
+
+.log-btn{
+  margin-top:10px;
+  padding:8px 18px;
+  border:none;
+  border-radius:8px;
+  background:#21262d;
+  color:#fff;
+  cursor:pointer;
+}
+
+/* Browser Area */
+
+.browser-page{
+  display:none;
+  width:100%;
+  height:100vh;
+  flex-direction:column;
+  background:#000;
+}
+
+.topbar{
+  width:100%;
+  background:#161b22;
+  padding:10px;
+  border-bottom:1px solid #30363d;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.home-btn{
+  padding:12px 24px;
+  border:none;
+  border-radius:10px;
+  background:#da3633;
+  color:#fff;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
+  background:#fff;
+}
+
+/* Popup */
+
+.popup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.popup-box{
+  width:95%;
+  max-width:900px;
+  max-height:90vh;
+  overflow:auto;
+  background:#161b22;
+  border-radius:15px;
+  padding:20px;
+  border:1px solid #30363d;
+}
+
+.popup-title{
+  font-size:22px;
+  margin-bottom:15px;
+  color:#58a6ff;
+  text-align:center;
+}
+
+.close-btn{
+  float:right;
+  background:#da3633;
+  border:none;
+  color:#fff;
+  padding:8px 15px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.clear-btn{
+  background:#f85149;
+  border:none;
+  color:#fff;
+  padding:10px 18px;
+  border-radius:8px;
+  margin-bottom:15px;
+  cursor:pointer;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+
+table th,
+table td{
+  border:1px solid #30363d;
+  padding:10px;
+  text-align:left;
+}
+
+table th{
+  background:#21262d;
+  color:#58a6ff;
+}
+
+table tr:nth-child(even){
+  background:#0d1117;
+}
+
+@media(max-width:600px){
+
+  table{
+    font-size:11px;
+  }
+
+  .title{
+    font-size:24px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Homepage -->
+<div class="home-page" id="homePage">
+
+<div class="login-box">
+
+<div class="title">📡 SM-Cable Network</div>
+
+<div class="subtitle">
+🔒 Remote Management System
+</div>
+
+<div class="subtitle">
+Login to Remote Access Network
+</div>
+
+<div class="form-group">
+<label>Enter wan ip :</label>
+
+<input
+type="text"
+id="ipInput"
+placeholder="Example : 10.10.10.100"
+inputmode="decimal"
+/>
+</div>
+
+<div class="form-group">
+<label>Enter port no :</label>
+
+<input
+type="number"
+id="portInput"
+placeholder="8080 / 8888 / Custom"
+/>
+</div>
+
+<button class="login-btn" onclick="openRouter()">
+Login to Router Admin
+</button>
+
+<!-- Device IP -->
+<div class="ip-box">
+🌐 Your Device IP :
+<span id="deviceIP">Loading...</span>
+</div>
+
+<div class="footer">
+All right copyright © 2026 - SM Cable Network
+<br>
+
+System Dev by -
+<a href="https://facebook.com/itsmilonbro" target="_blank">
+👤 Md Milon Hossain
+</a>
+
+<br>
+
+<button class="log-btn" onclick="openLogs()">
+📜 LOG
+</button>
+
+</div>
+
+</div>
+</div>
+
+<!-- Browser Area -->
+
+<div class="browser-page" id="browserPage">
+
+<div class="topbar">
+<button class="home-btn" onclick="goHome()">
+⭕ Homepage
+</button>
+</div>
+
+<iframe id="routerFrame"></iframe>
+
+</div>
+
+<!-- Popup -->
+
+<div class="popup" id="logPopup">
+
+<div class="popup-box">
+
+<button class="close-btn" onclick="closeLogs()">
+✖ Close
+</button>
+
+<div class="popup-title">
+📜 Login Logs Database
+</div>
+
+<button class="clear-btn" onclick="clearLogs()">
+🗑 Clear Data
+</button>
+
+<div id="logsTable"></div>
+
+</div>
+</div>
+
+<script>
+
+/* Only number and dot allow */
+
+document.getElementById("ipInput").addEventListener("input", function () {
+  this.value = this.value.replace(/[^0-9.]/g, "");
+});
+
+let deviceIP = "Unknown";
+
+/* Get Public IP */
+
+fetch("https://api.ipify.org?format=json")
+.then(res => res.json())
+.then(data => {
+
+  deviceIP = data.ip;
+
+  document.getElementById("deviceIP").innerText = data.ip;
+
+})
+.catch(() => {
+
+  document.getElementById("deviceIP").innerText = "Unable to Load";
+
+});
+
+/* Open Router */
+
+function openRouter(){
+
+  const ip = document.getElementById("ipInput").value.trim();
+  const port = document.getElementById("portInput").value.trim();
+
+  if(ip === "" || port === ""){
+    alert("⚠️ Please enter WAN IP and Port Number");
+    return;
+  }
+
+  const url = "http://" + ip + ":" + port;
+
+  /* Save Logs */
+
+  let logs = JSON.parse(localStorage.getItem("routerLogs")) || [];
+
+  logs.push({
+    dateTime : new Date().toLocaleString(),
+    deviceIP : deviceIP,
+    routerIP : ip,
+    port : port,
+    fullURL : url,
+    userAgent : navigator.userAgent
+  });
+
+  localStorage.setItem("routerLogs", JSON.stringify(logs));
+
+  document.getElementById("routerFrame").src = url;
+
+  document.getElementById("homePage").style.display = "none";
+  document.getElementById("browserPage").style.display = "flex";
+}
+
+/* Go Home */
+
+function goHome(){
+
+  document.getElementById("routerFrame").src = "about:blank";
+
+  document.getElementById("ipInput").value = "";
+  document.getElementById("portInput").value = "";
+
+  document.getElementById("browserPage").style.display = "none";
+  document.getElementById("homePage").style.display = "flex";
+
+  if ('caches' in window) {
+
+    caches.keys().then(function(names) {
+
+      for (let name of names)
+        caches.delete(name);
+
+    });
+
+  }
+
+}
+
+/* Open Logs */
+
+function openLogs(){
+
+  const pass = prompt("🔐 Enter Admin Password");
+
+  if(pass !== "adminsojib"){
+
+    alert("❌ Wrong Password");
+    return;
+
+  }
+
+  document.getElementById("logPopup").style.display = "flex";
+
+  loadLogs();
+
+}
+
+/* Close Logs */
+
+function closeLogs(){
+
+  document.getElementById("logPopup").style.display = "none";
+
+}
+
+/* Load Logs */
+
+function loadLogs(){
+
+  let logs = JSON.parse(localStorage.getItem("routerLogs")) || [];
+
+  if(logs.length === 0){
+
+    document.getElementById("logsTable").innerHTML =
+    "<p>No Logs Found.</p>";
+
+    return;
+
+  }
+
+  let table = `
+  <table>
+  <tr>
+    <th>#</th>
+    <th>Date Time</th>
+    <th>Device IP</th>
+    <th>Router IP</th>
+    <th>Port</th>
+    <th>Full URL</th>
+  </tr>
+  `;
+
+  logs.reverse().forEach((log, index) => {
+
+    table += `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${log.dateTime}</td>
+      <td>${log.deviceIP}</td>
+      <td>${log.routerIP}</td>
+      <td>${log.port}</td>
+      <td>${log.fullURL}</td>
+    </tr>
+    `;
+
+  });
+
+  table += "</table>";
+
+  document.getElementById("logsTable").innerHTML = table;
+
+}
+
+/* Clear Logs */
+
+function clearLogs(){
+
+  const confirmDelete = confirm("⚠️ Are you sure to clear all logs?");
+
+  if(confirmDelete){
+
+    localStorage.removeItem("routerLogs");
+
+    alert("✅ All Logs Cleared");
+
+    loadLogs();
+
+  }
+
+}
+
+</script>
+
+</body>
+  </html>
