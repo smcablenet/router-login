@@ -1,562 +1,772 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SM-Cable Nexus | Secure Management Suite</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, Arial, sans-serif;
+    }
 
-<title>🔒:: SM-Cable Network | Remote Management</title>
+    body {
+      background: #0a0c10;
+      color: #e6edf3;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-<style>
+    /* ========= GLOBAL PANEL STYLES (consistent theme) ========= */
+    .card-panel {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 24px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial, Helvetica, sans-serif;
-}
+    .glass-input {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: white;
+      font-size: 15px;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
 
-body{
-  background:#0d1117;
-  color:#fff;
-  min-height:100vh;
-  overflow:hidden;
-}
+    .glass-input:focus {
+      border-color: #58a6ff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+    }
 
-/* Homepage */
+    .btn-primary {
+      background: #238636;
+      border: none;
+      border-radius: 40px;
+      padding: 12px 20px;
+      font-weight: 700;
+      font-size: 15px;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      width: 100%;
+    }
 
-.home-page{
-  width:100%;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-  background:
-  radial-gradient(circle at top left, #1f2937 0%, transparent 40%),
-  radial-gradient(circle at bottom right, #111827 0%, transparent 40%),
-  #0d1117;
-}
+    .btn-primary:hover {
+      background: #2ea043;
+      transform: scale(0.98);
+    }
 
-.login-box{
-  width:100%;
-  max-width:430px;
-  background:#161b22;
-  border:1px solid #30363d;
-  border-radius:20px;
-  padding:35px 25px;
-  box-shadow:0 0 40px rgba(0,0,0,0.5);
-}
+    .btn-danger {
+      background: #da3633;
+    }
 
-.title{
-  text-align:center;
-  margin-bottom:10px;
-  font-size:30px;
-  font-weight:bold;
-  color:#58a6ff;
-}
+    .btn-danger:hover {
+      background: #f85149;
+    }
 
-.subtitle{
-  text-align:center;
-  margin-bottom:12px;
-  color:#8b949e;
-  font-size:15px;
-}
+    .btn-secondary {
+      background: #21262d;
+      border: 1px solid #3d444d;
+      border-radius: 40px;
+      padding: 10px 18px;
+      color: #e6edf3;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-.form-group{
-  margin-bottom:22px;
-}
+    .badge-ip {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 14px;
+      padding: 10px;
+      font-size: 13px;
+      text-align: center;
+      color: #58a6ff;
+    }
 
-label{
-  display:block;
-  margin-bottom:10px;
-  font-size:14px;
-  color:#c9d1d9;
-}
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #7d8590;
+      margin-top: 28px;
+      border-top: 1px solid #21262d;
+      padding-top: 20px;
+    }
 
-input{
-  width:100%;
-  padding:14px 16px;
-  border:none;
-  border-radius:12px;
-  background:#0d1117;
-  border:1px solid #30363d;
-  color:#fff;
-  font-size:16px;
-  outline:none;
-  transition:0.3s;
-}
+    /* layouts */
+    .flex-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-input:focus{
-  border-color:#58a6ff;
-  box-shadow:0 0 10px rgba(88,166,255,0.3);
-}
+    .login-container {
+      width: 100%;
+      max-width: 450px;
+    }
 
-.login-btn{
-  width:100%;
-  padding:15px;
-  border:none;
-  border-radius:12px;
-  background:#238636;
-  color:#fff;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.3s;
-}
+    /* FULLSCREEN BROWSER MODE (hides category panel) */
+    .dashboard-fullscreen .router-category-panel {
+      display: none !important;
+    }
+    .dashboard-fullscreen .browser-area-wrapper {
+      margin: 0 !important;
+      border-radius: 0 !important;
+    }
+    .dashboard-fullscreen #fullscreenToggleBtn {
+      background: #2ea043;
+    }
 
-.login-btn:hover{
-  background:#2ea043;
-}
+    /* browser area */
+    .browser-area-wrapper {
+      flex: 1;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s;
+    }
 
-.ip-box{
-  margin-top:18px;
-  padding:12px;
-  border-radius:10px;
-  background:#0d1117;
-  border:1px solid #30363d;
-  text-align:center;
-  font-size:14px;
-  color:#58a6ff;
-  word-break:break-all;
-}
+    iframe {
+      width: 100%;
+      flex: 1;
+      border: none;
+      background: white;
+    }
 
-.footer{
-  margin-top:25px;
-  text-align:center;
-  font-size:13px;
-  color:#8b949e;
-  line-height:1.8;
-}
+    /* LOADER OVERLAY */
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 20000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid #30363d;
+      border-top: 5px solid #58a6ff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .loader-text {
+      color: #58a6ff;
+      font-size: 18px;
+      font-weight: 500;
+      background: #161b22cc;
+      padding: 8px 24px;
+      border-radius: 40px;
+    }
 
-.footer a{
-  color:#58a6ff;
-  text-decoration:none;
-}
+    /* popup (logs) */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      backdrop-filter: blur(4px);
+    }
 
-.log-btn{
-  margin-top:10px;
-  padding:8px 18px;
-  border:none;
-  border-radius:8px;
-  background:#21262d;
-  color:#fff;
-  cursor:pointer;
-}
+    .popup-card {
+      background: #161b22;
+      width: 90%;
+      max-width: 1100px;
+      max-height: 85vh;
+      border-radius: 28px;
+      border: 1px solid #3d444d;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* Browser Area */
+    .popup-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.browser-page{
-  display:none;
-  width:100%;
-  height:100vh;
-  flex-direction:column;
-  background:#000;
-}
+    .popup-content {
+      padding: 20px;
+      overflow-y: auto;
+    }
 
-.topbar{
-  width:100%;
-  background:#161b22;
-  padding:10px;
-  border-bottom:1px solid #30363d;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
+    /* Enhanced table styles for logs */
+    .logs-table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 600px;
+    }
 
-.home-btn{
-  padding:12px 24px;
-  border:none;
-  border-radius:10px;
-  background:#da3633;
-  color:#fff;
-  font-size:15px;
-  font-weight:bold;
-  cursor:pointer;
-}
+    th, td {
+      border: 1px solid #30363d;
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
 
-iframe{
-  width:100%;
-  height:100%;
-  border:none;
-  background:#fff;
-}
+    th {
+      background: #21262d;
+      color: #58a6ff;
+      position: sticky;
+      top: 0;
+    }
 
-/* Popup */
+    tr:nth-child(even) {
+      background: #0d1117;
+    }
+    tr:hover {
+      background: #1f242e;
+    }
 
-.popup{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.7);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
+    /* category panel */
+    .router-category-panel {
+      background: #161b22;
+      border-radius: 28px;
+      padding: 28px 24px;
+      margin: 20px;
+      border: 1px solid #30363d;
+      transition: all 0.2s;
+    }
 
-.popup-box{
-  width:95%;
-  max-width:900px;
-  max-height:90vh;
-  overflow:auto;
-  background:#161b22;
-  border-radius:15px;
-  padding:20px;
-  border:1px solid #30363d;
-}
+    .category-select {
+      width: 100%;
+      padding: 14px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 20px;
+      color: white;
+      font-size: 16px;
+      margin-bottom: 28px;
+    }
 
-.popup-title{
-  font-size:22px;
-  margin-bottom:15px;
-  color:#58a6ff;
-  text-align:center;
-}
+    .sub-list {
+      background: #0d1117;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 20px 0;
+      border: 1px solid #2d333b;
+    }
 
-.close-btn{
-  float:right;
-  background:#da3633;
-  border:none;
-  color:#fff;
-  padding:8px 15px;
-  border-radius:8px;
-  cursor:pointer;
-}
+    .url-badge {
+      display: inline-block;
+      background: #21262d;
+      margin: 6px 8px;
+      padding: 8px 14px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-family: monospace;
+      border: 1px solid #3a3f47;
+      cursor: pointer;
+      transition: 0.1s;
+    }
 
-.clear-btn{
-  background:#f85149;
-  border:none;
-  color:#fff;
-  padding:10px 18px;
-  border-radius:8px;
-  margin-bottom:15px;
-  cursor:pointer;
-}
+    .url-badge:hover {
+      background: #2ea043;
+      border-color: #58a6ff;
+    }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
+    .action-buttons {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin: 25px 0 15px;
+    }
 
-table th,
-table td{
-  border:1px solid #30363d;
-  padding:10px;
-  text-align:left;
-}
-
-table th{
-  background:#21262d;
-  color:#58a6ff;
-}
-
-table tr:nth-child(even){
-  background:#0d1117;
-}
-
-@media(max-width:600px){
-
-  table{
-    font-size:11px;
-  }
-
-  .title{
-    font-size:24px;
-  }
-
-}
-
-</style>
+    hr {
+      border-color: #30363d;
+      margin: 16px 0;
+    }
+    .fullscreen-btn {
+      background: #1f6feb;
+      margin-left: auto;
+    }
+    @media (max-width: 640px) {
+      .router-category-panel { margin: 12px; padding: 20px; }
+      .url-badge { font-size: 11px; padding: 5px 10px; }
+      th, td { font-size: 11px; padding: 6px; }
+    }
+  </style>
 </head>
-
 <body>
 
-<!-- Homepage -->
-<div class="home-page" id="homePage">
-
-<div class="login-box">
-
-<div class="title">📡 SM-Cable Network</div>
-
-<div class="subtitle">
-🔒 Remote Management System
+<!-- LOADER ELEMENT -->
+<div id="globalLoader" class="loader-overlay">
+  <div class="spinner"></div>
+  <div class="loader-text">🔍 Auto Scanning IP...</div>
 </div>
 
-<div class="subtitle">
-Login to Remote Access Network
+<!-- PAGE 1 : LOGIN -->
+<div id="loginPage" class="flex-center">
+  <div class="login-container">
+    <div class="card-panel" style="padding: 34px 26px;">
+      <div style="text-align: center; margin-bottom: 18px;">
+        <div style="font-size: 32px; font-weight: 800; color: #58a6ff;">📡 SM-Cable Network</div>
+        <div style="color: #8b949e; margin-top: 8px;">🔐 Remote Management System</div>
+        <div style="font-size: 14px; margin-top: 6px;">Authorized Access Only</div>
+      </div>
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 8px;">👤 Username</label>
+        <input type="text" id="loginUsername" class="glass-input" placeholder="Enter user name">
+      </div>
+      <div class="form-group" style="margin-bottom: 24px;">
+        <label style="display: block; margin-bottom: 8px;">🔒 Password</label>
+        <input type="password" id="loginPassword" class="glass-input" placeholder="•••••">
+      </div>
+      <button class="btn-primary" id="doLoginBtn">➤ Login to Dashboard</button>
+      <div class="badge-ip" style="margin-top: 24px;">
+        🌐 Your Public IP : <span id="visitorIP">Loading...</span>
+      </div>
+      <footer>
+        © 2026 SM Cable Network — Dev by 
+        <a href="https://facebook.com/itsmilonbro" style="color:#58a6ff; text-decoration: none;">👤 Md Milon Hossain</a>
+        <br>
+        <button id="viewGlobalLogsBtn" style="background: #21262d; border: none; padding: 6px 14px; border-radius: 40px; color: white; margin-top: 12px; cursor: pointer;">📜 View Login Logs</button>
+      </footer>
+    </div>
+  </div>
 </div>
 
-<div class="form-group">
-<label>Enter wan ip :</label>
+<!-- DASHBOARD (Page2+Page3) -->
+<div id="dashboardContainer" style="display: none; height: 100vh; flex-direction: column;">
+  <!-- Top bar -->
+  <div style="background: #161b22; border-bottom: 1px solid #30363d; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+    <div style="font-weight: bold; color:#58a6ff;">⚡ SM-CABLE • ROUTER COMMANDER</div>
+    <div style="display: flex; gap: 12px;">
+      <button id="fullscreenToggleBtn" class="btn-secondary" style="background:#1f6feb;">🖥️ Fullscreen Browser</button>
+      <button id="logoutBtnMain" class="btn-secondary" style="background:#da3633;">🚪 Logout</button>
+      <button id="openMasterLogs" class="btn-secondary">📋 Master Logs</button>
+    </div>
+  </div>
 
-<input
-type="text"
-id="ipInput"
-placeholder="Example : 10.10.10.100"
-inputmode="decimal"
-/>
+  <div style="display: flex; flex: 1; overflow: hidden; flex-direction: column;">
+    <!-- Category Panel (Page 3) -->
+    <div class="router-category-panel" id="categoryPanel">
+      <div style="font-size: 26px; font-weight: 700;">🗂️ Router Brand Explorer</div>
+      <div style="color: #8b949e; margin-bottom: 20px;">Select brand → auto-load sub-IPs → click any to browse / auto-scan</div>
+      <select id="brandSelect" class="category-select">
+        <option value="">-- Select Router Brand --</option>
+      </select>
+      <div id="subItemsContainer" class="sub-list">
+        <div style="color: #7d8590;">✨ Choose a brand to see available admin URLs/IPs</div>
+      </div>
+      <div class="action-buttons">
+        <button id="autoLoginBtn" class="btn-primary" style="background: #1f6feb;">⚡ Auto Login (Scan & Connect)</button>
+        <button id="stopAutoBtn" class="btn-secondary" style="background:#6e7681;">⏹️ Stop Auto Scan</button>
+      </div>
+      <hr>
+      <div style="font-size: 13px; background:#0d1117; padding: 8px 14px; border-radius: 30px;">
+        💡 Tip: Click URL badges to load. Auto Login tries predefined IPs until active connection.
+      </div>
+    </div>
+
+    <!-- Browser Area (Fullscreen capable) -->
+    <div class="browser-area-wrapper" id="browserWrapper" style="flex:1; background:#000; display: flex; flex-direction: column;">
+      <div style="background:#0d1117; padding: 10px 16px; border-top: 1px solid #30363d; display: flex; gap: 12px;">
+        <input type="text" id="currentUrlInput" class="glass-input" style="flex:1; padding: 8px 12px;" placeholder="Router URL will appear here">
+        <button id="refreshIframeBtn" class="btn-secondary">🔄 Reload</button>
+      </div>
+      <iframe id="routerFrame" title="router console" style="width: 100%; flex:1; border: none; background: #fff;"></iframe>
+    </div>
+  </div>
 </div>
 
-<div class="form-group">
-<label>Enter port no :</label>
-
-<input
-type="number"
-id="portInput"
-placeholder="8080 / 8888 / Custom"
-/>
-</div>
-
-<button class="login-btn" onclick="openRouter()">
-Login to Router Admin
-</button>
-
-<!-- Device IP -->
-<div class="ip-box">
-🌐 Your Device IP :
-<span id="deviceIP">Loading...</span>
-</div>
-
-<div class="footer">
-All right copyright © 2026 - SM Cable Network
-<br>
-
-System Dev by -
-<a href="https://facebook.com/itsmilonbro" target="_blank">
-👤 Md Milon Hossain
-</a>
-
-<br>
-
-<button class="log-btn" onclick="openLogs()">
-📜 LOG
-</button>
-
-</div>
-
-</div>
-</div>
-
-<!-- Browser Area -->
-
-<div class="browser-page" id="browserPage">
-
-<div class="topbar">
-<button class="home-btn" onclick="goHome()">
-⭕ Homepage
-</button>
-</div>
-
-<iframe id="routerFrame"></iframe>
-
-</div>
-
-<!-- Popup -->
-
-<div class="popup" id="logPopup">
-
-<div class="popup-box">
-
-<button class="close-btn" onclick="closeLogs()">
-✖ Close
-</button>
-
-<div class="popup-title">
-📜 Login Logs Database
-</div>
-
-<button class="clear-btn" onclick="clearLogs()">
-🗑 Clear Data
-</button>
-
-<div id="logsTable"></div>
-
-</div>
+<!-- Global Log Popup -->
+<div id="globalLogPopup" class="popup-overlay">
+  <div class="popup-card">
+    <div class="popup-header">
+      <span style="font-size: 22px; font-weight: bold;">📜 Access & Activity Logs</span>
+      <button id="closeLogPopupBtn" style="background:#da3633; border: none; padding: 6px 16px; border-radius: 40px; color:white;">✖ Close</button>
+    </div>
+    <div class="popup-content">
+      <button id="clearAllLogsBtn" style="background:#f85149; border: none; color: white; padding: 8px 20px; border-radius: 30px; margin-bottom: 20px;">🗑 Clear All Logs</button>
+      <div id="logsTableView" class="logs-table-wrapper"></div>
+    </div>
+  </div>
 </div>
 
 <script>
+  // ----------------------- GLOBAL STATE -----------------------
+  let globalActivityLogs = JSON.parse(localStorage.getItem("sm_cable_master_logs")) || [];
+  let currentVisitorIP = "Unknown";
+  let isLoggedIn = false;    // track session for log viewing security
 
-/* Only number and dot allow */
+  // Fetch public IP
+  fetch("https://api.ipify.org?format=json")
+    .then(res => res.json())
+    .then(data => { currentVisitorIP = data.ip; document.getElementById("visitorIP").innerText = data.ip; })
+    .catch(() => { document.getElementById("visitorIP").innerText = "0.0.0.0"; currentVisitorIP = "0.0.0.0"; });
 
-document.getElementById("ipInput").addEventListener("input", function () {
-  this.value = this.value.replace(/[^0-9.]/g, "");
-});
-
-let deviceIP = "Unknown";
-
-/* Get Public IP */
-
-fetch("https://api.ipify.org?format=json")
-.then(res => res.json())
-.then(data => {
-
-  deviceIP = data.ip;
-
-  document.getElementById("deviceIP").innerText = data.ip;
-
-})
-.catch(() => {
-
-  document.getElementById("deviceIP").innerText = "Unable to Load";
-
-});
-
-/* Open Router */
-
-function openRouter(){
-
-  const ip = document.getElementById("ipInput").value.trim();
-  const port = document.getElementById("portInput").value.trim();
-
-  if(ip === "" || port === ""){
-    alert("⚠️ Please enter WAN IP and Port Number");
-    return;
+  function addLogEntry(actionType, details, extra = {}) {
+    const entry = {
+      id: Date.now(),
+      timestamp: new Date().toLocaleString(),
+      userIP: currentVisitorIP,
+      action: actionType,
+      details: details,
+      userAgent: navigator.userAgent,
+      ...extra
+    };
+    globalActivityLogs.unshift(entry);
+    if (globalActivityLogs.length > 600) globalActivityLogs.pop();
+    localStorage.setItem("sm_cable_master_logs", JSON.stringify(globalActivityLogs));
   }
 
-  const url = "http://" + ip + ":" + port;
-
-  /* Save Logs */
-
-  let logs = JSON.parse(localStorage.getItem("routerLogs")) || [];
-
-  logs.push({
-    dateTime : new Date().toLocaleString(),
-    deviceIP : deviceIP,
-    routerIP : ip,
-    port : port,
-    fullURL : url,
-    userAgent : navigator.userAgent
-  });
-
-  localStorage.setItem("routerLogs", JSON.stringify(logs));
-
-  document.getElementById("routerFrame").src = url;
-
-  document.getElementById("homePage").style.display = "none";
-  document.getElementById("browserPage").style.display = "flex";
-}
-
-/* Go Home */
-
-function goHome(){
-
-  document.getElementById("routerFrame").src = "about:blank";
-
-  document.getElementById("ipInput").value = "";
-  document.getElementById("portInput").value = "";
-
-  document.getElementById("browserPage").style.display = "none";
-  document.getElementById("homePage").style.display = "flex";
-
-  if ('caches' in window) {
-
-    caches.keys().then(function(names) {
-
-      for (let name of names)
-        caches.delete(name);
-
-    });
-
-  }
-
-}
-
-/* Open Logs */
-
-function openLogs(){
-
-  const pass = prompt("🔐 Enter Admin Password");
-
-  if(pass !== "adminsojib"){
-
-    alert("❌ Wrong Password");
-    return;
-
-  }
-
-  document.getElementById("logPopup").style.display = "flex";
-
-  loadLogs();
-
-}
-
-/* Close Logs */
-
-function closeLogs(){
-
-  document.getElementById("logPopup").style.display = "none";
-
-}
-
-/* Load Logs */
-
-function loadLogs(){
-
-  let logs = JSON.parse(localStorage.getItem("routerLogs")) || [];
-
-  if(logs.length === 0){
-
-    document.getElementById("logsTable").innerHTML =
-    "<p>No Logs Found.</p>";
-
-    return;
-
-  }
-
-  let table = `
-  <table>
-  <tr>
-    <th>#</th>
-    <th>Date Time</th>
-    <th>Device IP</th>
-    <th>Router IP</th>
-    <th>Port</th>
-    <th>Full URL</th>
-  </tr>
-  `;
-
-  logs.reverse().forEach((log, index) => {
-
-    table += `
-    <tr>
-      <td>${index + 1}</td>
-      <td>${log.dateTime}</td>
-      <td>${log.deviceIP}</td>
-      <td>${log.routerIP}</td>
-      <td>${log.port}</td>
-      <td>${log.fullURL}</td>
-    </tr>
+  // FIXED: Enhanced renderLogsTable function - ensures table displays properly
+  function renderLogsTable() {
+    const container = document.getElementById("logsTableView");
+    if (!container) return;
+    
+    if (!globalActivityLogs.length) {
+      container.innerHTML = "<div style='padding: 40px 20px; text-align:center; background:#0d1117; border-radius: 16px;'>📭 No logs recorded yet.</div>";
+      return;
+    }
+    
+    // Build clean HTML table
+    let html = `
+      <table style="width:100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr style="background: #21262d;">
+            <th style="padding: 12px 10px; border: 1px solid #30363d; text-align: left;">#</th>
+            <th style="padding: 12px 10px; border: 1px solid #30363d; text-align: left;">Date & Time</th>
+            <th style="padding: 12px 10px; border: 1px solid #30363d; text-align: left;">IP Address</th>
+            <th style="padding: 12px 10px; border: 1px solid #30363d; text-align: left;">Action</th>
+            <th style="padding: 12px 10px; border: 1px solid #30363d; text-align: left;">Details</th>
+          </tr>
+        </thead>
+        <tbody>
     `;
-
-  });
-
-  table += "</table>";
-
-  document.getElementById("logsTable").innerHTML = table;
-
-}
-
-/* Clear Logs */
-
-function clearLogs(){
-
-  const confirmDelete = confirm("⚠️ Are you sure to clear all logs?");
-
-  if(confirmDelete){
-
-    localStorage.removeItem("routerLogs");
-
-    alert("✅ All Logs Cleared");
-
-    loadLogs();
-
+    
+    // Display logs from newest to oldest (already unshifted)
+    globalActivityLogs.slice(0, 200).forEach((log, idx) => {
+      // Escape potentially dangerous characters for display
+      const safeDetails = (log.details || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const safeAction = (log.action || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      html += `
+        <tr style="border-bottom: 1px solid #30363d;">
+          <td style="padding: 10px; border: 1px solid #30363d; vertical-align: top;">${idx + 1}</td>
+          <td style="padding: 10px; border: 1px solid #30363d; vertical-align: top; white-space: nowrap;">${log.timestamp || 'N/A'}</td>
+          <td style="padding: 10px; border: 1px solid #30363d; vertical-align: top; font-family: monospace;">${log.userIP || 'Unknown'}</td>
+          <td style="padding: 10px; border: 1px solid #30363d; vertical-align: top; color: #58a6ff; font-weight: 500;">${safeAction}</td>
+          <td style="padding: 10px; border: 1px solid #30363d; vertical-align: top; word-break: break-word;">${safeDetails}</td>
+        </tr>
+      `;
+    });
+    
+    html += `
+        </tbody>
+      </table>
+    `;
+    
+    container.innerHTML = html;
   }
 
-}
+  // ---------- AUTH ----------
+  const validUsers = { admin: "12345", sojib: "12345", milon: "12345", milton: "12345" };
 
+  function doLogin() {
+    const username = document.getElementById("loginUsername").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value.trim();
+    if (!username || !password) return alert("❌ Please fill username and password");
+    if (validUsers[username] && validUsers[username] === password) {
+      addLogEntry("🔐 LOGIN SUCCESS", `User "${username}" logged into system`, { username });
+      isLoggedIn = true;
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("dashboardContainer").style.display = "flex";
+      initBrandsAndSubItems();
+      // reset fullscreen mode if any
+      document.getElementById("dashboardContainer").classList.remove("dashboard-fullscreen");
+    } else {
+      addLogEntry("⚠️ LOGIN FAILED", `Failed attempt with user "${username}" from IP ${currentVisitorIP}`);
+      alert("❌ Invalid credentials! Access Denied.");
+    }
+  }
+
+  // ---------- ROUTER DATABASE ----------
+  const routerDatabase = {
+    "TP-Link": ["https://192.168.0.1", "https://192.168.1.1", "http://tplinkwifi.net"],
+    "Netgear": ["https://192.168.1.1", "https://192.168.0.1", "http://routerlogin.net"],
+    "Asus": ["https://192.168.1.1", "https://192.168.2.1", "http://router.asus.com"],
+    "D-Link": ["https://192.168.0.1", "https://192.168.1.1", "http://dlinkrouter.com"],
+    "Linksys": ["https://192.168.1.1", "http://linksyssmartwifi.com"],
+    "Tenda": ["https://192.168.0.1", "https://192.168.1.1", "http://tendawifi.com"],
+    "Cisco": ["https://192.168.1.1", "https://192.168.0.1"],
+    "Xiaomi": ["https://192.168.31.1", "http://miwifi.com"],
+    "Huawei": ["https://192.168.1.1", "https://192.168.0.1", "https://192.168.3.1"],
+    "Google Nest": ["https://192.168.86.1"],
+    "Ubiquiti": ["https://192.168.1.1", "http://unifi.ubnt.com"],
+    "MERCURY": ["https://192.168.1.1", "http://melogin.cn"],
+    "Apple": ["https://10.0.1.1"],
+    "Belkin": ["https://192.168.2.1", "https://192.168.1.1"],
+    "ZTE": ["https://192.168.1.1", "https://192.168.0.1"],
+    "Motorola": ["https://192.168.0.1", "https://192.168.100.1"],
+    "HiWiFi": ["https://192.168.199.1", "http://hiwifi.com"],
+    "WAVLINK": ["https://192.168.10.1", "http://wifi.wavlink.com"],
+    "Ruijie": ["https://192.168.110.1", "http://ruiyi.cn"],
+    "MikroTik": ["https://192.168.88.1"],
+    "360": ["https://192.168.0.1", "http://luyou.360.cn"],
+    "H3C": ["https://192.168.1.1", "https://192.168.124.1", "http://moshujia.com"]
+  };
+
+  const autoScanList = [
+ "https://192.168.0.1", "https://192.168.0.2", "https://192.168.1.1", "https://192.168.1.2",
+    "https://192.168.1.0", "https://192.168.2.1",
+    "http://tplinkwifi.net", "http://tplinklogin.net", "http://tendawifi.com", "http://dlinkrouter.com",
+    "http://dlinkrouter.local", "http://miwifi.com", "http://router.asus.com", "http://routerlogin.net",
+    "https://www.asusrouter.com:8443",
+    "http://www.routerlogin.com", "http://hiwifi.com", "http://linksyssmartwifi.com",
+    "https://192.168.2.0", "https://192.168.3.1", "https://192.168.10.1", "https://192.168.31.1", 
+    "https://192.168.86.1", "https://192.168.88.1", "https://192.168.100.1", "https://192.168.110.1", 
+    "https://192.168.124.1", "https://192.168.199.1", "https://10.0.1.1", "http://wifi.wavlink.com", 
+    "http://luyou.360.cn", "http://melogin.cn", "http://moshujia.com", "http://unifi.ubnt.com", "http://ruiyi.cn"
+  ];
+
+  let autoScanActive = false;
+  let autoScanTimer = null;
+  let currentScanIndex = 0;
+  const iframe = document.getElementById("routerFrame");
+  const urlInput = document.getElementById("currentUrlInput");
+  const loaderDiv = document.getElementById("globalLoader");
+
+  function showLoader(show, customText = "🔍 Auto Scanning Network ...") {
+    if (show) {
+      const loaderTextEl = document.querySelector(".loader-text");
+      if (loaderTextEl) loaderTextEl.innerText = customText;
+      loaderDiv.style.display = "flex";
+    } else {
+      loaderDiv.style.display = "none";
+    }
+  }
+
+  function loadUrlInIframe(url, logAction = true) {
+    if (!url) return;
+    let finalUrl = url;
+    if (!finalUrl.startsWith("http")) finalUrl = "http://" + finalUrl;
+    iframe.src = finalUrl;
+    urlInput.value = finalUrl;
+    if (logAction) addLogEntry("🌐 BROWSER NAVIGATION", `Opened router URL: ${finalUrl}`, { targetUrl: finalUrl });
+  }
+
+  function startAutoScan() {
+    if (autoScanActive) {
+      alert("Auto scan already running. Stop it first.");
+      return;
+    }
+    if (autoScanList.length === 0) return;
+    autoScanActive = true;
+    currentScanIndex = 0;
+    addLogEntry("⚡ AUTO SCAN STARTED", `Beginning auto-scan of ${autoScanList.length} endpoints`);
+    showLoader(true, "🔎 Scanning Network for active router...");
+    attemptNextAutoUrl();
+  }
+
+  function attemptNextAutoUrl() {
+    if (!autoScanActive) return;
+    if (currentScanIndex >= autoScanList.length) {
+      autoScanActive = false;
+      showLoader(false);
+      addLogEntry("⏹️ AUTO SCAN FINISHED", "No responsive router found in full list.");
+      alert("Auto scan completed. No active router found. You can manually select a brand or try again.");
+      if (autoScanTimer) clearTimeout(autoScanTimer);
+      return;
+    }
+    const testUrl = autoScanList[currentScanIndex];
+    addLogEntry("🔄 AUTO TRY", `Attempting ${testUrl}`);
+    iframe.src = testUrl;
+    urlInput.value = testUrl;
+
+    const onLoadSuccess = () => {
+      if (autoScanActive) {
+        autoScanActive = false;
+        if (autoScanTimer) clearTimeout(autoScanTimer);
+        iframe.removeEventListener("load", onLoadSuccess);
+        showLoader(false);
+        addLogEntry("✅ ACTIVE ROUTER FOUND", `Auto-scan success: ${testUrl}`);
+        const continueScan = confirm(`✅ Active router found at ${testUrl}!\n\nDo you want to CONTINUE scanning for other possible routers?\n(Click Cancel to stop scanning and keep current connection.)`);
+        if (continueScan) {
+          autoScanActive = true;
+          currentScanIndex++;
+          addLogEntry("🔄 SCAN RESUME", "User chose to continue scanning after success.");
+          showLoader(true, "Continuing scan for more devices...");
+          attemptNextAutoUrl();
+        } else {
+          addLogEntry("⏸️ SCAN STOPPED", "User stopped after successful connection.");
+          alert(`Scan stopped. Current router: ${testUrl}`);
+        }
+      }
+    };
+    iframe.addEventListener("load", onLoadSuccess, { once: true });
+
+    autoScanTimer = setTimeout(() => {
+      if (autoScanActive) {
+        iframe.removeEventListener("load", onLoadSuccess);
+        currentScanIndex++;
+        attemptNextAutoUrl();
+      }
+    }, 5000);
+  }
+
+  function stopAutoScan() {
+    if (autoScanActive) {
+      autoScanActive = false;
+      if (autoScanTimer) clearTimeout(autoScanTimer);
+      showLoader(false);
+      addLogEntry("⛔ AUTO SCAN STOPPED", "User stopped automatic scanning manually.");
+      alert("Auto scan stopped by user.");
+    }
+  }
+
+  function initBrandsAndSubItems() {
+    const brandSelect = document.getElementById("brandSelect");
+    brandSelect.innerHTML = '<option value="">-- Select Router Brand --</option>';
+    Object.keys(routerDatabase).sort().forEach(brand => {
+      const opt = document.createElement("option");
+      opt.value = brand;
+      opt.textContent = brand;
+      brandSelect.appendChild(opt);
+    });
+    brandSelect.onchange = function() {
+      const selected = brandSelect.value;
+      const container = document.getElementById("subItemsContainer");
+      if (!selected || !routerDatabase[selected]) {
+        container.innerHTML = "<div style='color:#7d8590;'>✨ Choose a brand to see admin URLs</div>";
+        return;
+      }
+      const urls = routerDatabase[selected];
+      let html = `<strong style="display:block; margin-bottom: 12px;">🔗 ${selected} Admin Interfaces :</strong><div>`;
+      urls.forEach(url => {
+        html += `<span class="url-badge" data-url="${url}">${url}</span>`;
+      });
+      html += `</div><div style="margin-top:12px;">⚡ Click any badge to browse</div>`;
+      container.innerHTML = html;
+      document.querySelectorAll(".url-badge").forEach(el => {
+        el.addEventListener("click", () => {
+          const target = el.getAttribute("data-url");
+          loadUrlInIframe(target);
+          addLogEntry("🏷️ BRAND SELECTION", `Loaded ${target} from brand ${selected}`);
+        });
+      });
+    };
+    document.getElementById("subItemsContainer").innerHTML = "<div style='color:#7d8590;'>✨ Select a brand above to see IP/URL list</div>";
+  }
+
+  function reloadIframe() {
+    if (iframe.src && iframe.src !== "about:blank") {
+      iframe.src = iframe.src;
+      addLogEntry("🔄 MANUAL REFRESH", `Reloaded ${iframe.src}`);
+    }
+  }
+
+  let isFullscreen = false;
+  function toggleFullscreenBrowser() {
+    const categoryPanel = document.getElementById("categoryPanel");
+    const toggleBtn = document.getElementById("fullscreenToggleBtn");
+    if (!isFullscreen) {
+      categoryPanel.style.display = "none";
+      toggleBtn.innerText = "⬇️ Exit Fullscreen";
+      toggleBtn.style.background = "#da3633";
+      isFullscreen = true;
+      addLogEntry("🖥️ FULLSCREEN MODE", "Browser area expanded, category panel hidden.");
+    } else {
+      categoryPanel.style.display = "block";
+      toggleBtn.innerText = "🖥️ Fullscreen Browser";
+      toggleBtn.style.background = "#1f6feb";
+      isFullscreen = false;
+      addLogEntry("🖥️ EXIT FULLSCREEN", "Category panel restored.");
+    }
+  }
+
+  function logout() {
+    addLogEntry("🚪 LOGOUT", `User logged out from dashboard`);
+    isLoggedIn = false;
+    if (autoScanActive) stopAutoScan();
+    document.getElementById("dashboardContainer").style.display = "none";
+    document.getElementById("loginPage").style.display = "flex";
+    document.getElementById("loginUsername").value = "";
+    document.getElementById("loginPassword").value = "";
+    iframe.src = "about:blank";
+    urlInput.value = "";
+    if (isFullscreen) toggleFullscreenBrowser();
+  }
+
+  function requestLogAccess() {
+    if (isLoggedIn) {
+      showLogPopupUnlocked();
+    } else {
+      const pwd = prompt("🔐 Session expired or not logged in.\nEnter Admin Password to view logs:");
+      if (pwd === "adminsojib") {
+        showLogPopupUnlocked();
+      } else {
+        alert("❌ Wrong Password! Access denied.");
+        addLogEntry("⚠️ UNAUTHORIZED LOG VIEW", "Failed attempt to view logs without session");
+      }
+    }
+  }
+
+  function showLogPopupUnlocked() {
+    renderLogsTable();
+    document.getElementById("globalLogPopup").style.display = "flex";
+  }
+
+  function closeLogPopup() { document.getElementById("globalLogPopup").style.display = "none"; }
+  
+  function clearAllLogs() {
+    if (confirm("⚠️ PERMANENTLY DELETE ALL LOGS?")) {
+      globalActivityLogs = [];
+      localStorage.setItem("sm_cable_master_logs", JSON.stringify(globalActivityLogs));
+      renderLogsTable();
+      addLogEntry("🗑️ LOGS CLEARED", "Administrator cleared entire log history");
+      alert("All logs erased.");
+    }
+  }
+
+  // EVENT LISTENERS
+  document.getElementById("doLoginBtn").addEventListener("click", doLogin);
+  document.getElementById("logoutBtnMain").addEventListener("click", logout);
+  document.getElementById("openMasterLogs").addEventListener("click", requestLogAccess);
+  document.getElementById("viewGlobalLogsBtn").addEventListener("click", requestLogAccess);
+  document.getElementById("closeLogPopupBtn").addEventListener("click", closeLogPopup);
+  document.getElementById("clearAllLogsBtn").addEventListener("click", clearAllLogs);
+  document.getElementById("autoLoginBtn").addEventListener("click", startAutoScan);
+  document.getElementById("stopAutoBtn").addEventListener("click", stopAutoScan);
+  document.getElementById("refreshIframeBtn").addEventListener("click", reloadIframe);
+  document.getElementById("fullscreenToggleBtn").addEventListener("click", toggleFullscreenBrowser);
+  document.getElementById("currentUrlInput").addEventListener("keypress", (e) => {
+    if (e.key === "Enter" && e.target.value.trim()) loadUrlInIframe(e.target.value.trim());
+  });
+
+  window.onload = () => {
+    addLogEntry("🌐 SYSTEM INIT", "SM-Cable Management Suite Loaded");
+  };
 </script>
-
 </body>
-  </html>
+</html>
